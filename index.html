@@ -7,36 +7,38 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- 首先我们要知道用户的鼠标点在哪里了？
-    这个我们就要监听 canvas 的 onclick 事件。
-    我们要知道用户鼠标所在的坐标，横纵轴多少像素 -->
-    <div id="canvas"></div>
+    <canvas id="canvas"></canvas>
     <script>
-        // 这里的 canvas 可以像这样直接拿，因为这个 id 可以做全局变量。
-        canvas.onclick = (e) => {
-            console.log(e.clientX)
-            console.log(e.clientY)
-            // console.log 调试大法：我虽然不知道 e 是啥，但我可以把它打出来。
-            // 现在再去页面上打开开发者工具，点击页面上任意一点。
-            // 接下来，我们要在最开始点的时候，就在那里出现一个圆点，那我们要创建一个 div 放在鼠标那个位置。
-            let div = document.createElement('div')
-            // 然后我们需要让 div 出现在 X Y 的位置
-            div.style.position = 'absolute'
-            div.style.left = e.clientX + 'px'
-            div.style.top = e.clientY + 'px'
-            // div.style.border = '1px solid black'
-            div.style.width = '6px'
-            div.style.height = '6px'
-            // 优化圆点出现的位置，以鼠标点击的点为中心出现
-            div.style.marginLeft = '-3px'
-            div.style.marginTop = '-3px'
-            // 圆点优化，将方点变成圆点
-            div.style.borderRadius = '50%'
-            // 实心优化，将原本空心的圆点变成实心的
-            div.style.backgroundColor = 'black'
-            // 目前这个 div 还只是在内存里，我们还没让它显示在页面上
-            canvas.appendChild(div)
+        // 通过 id 找到 canvas
+        let canvas = document.getElementById("canvas");
+        // 获取屏幕的宽高
+        canvas.height = document.documentElement.clientHeight
+        canvas.width = document.documentElement.clientWidth
+        let ctx = canvas.getContext("2d");
+        let painting = false
+        // 填充一个样式，并且是这个颜色。
+        ctx.fillStyle = "black";
+        
+        canvas.onmousedown = (e) => {
+            painting = true
         }
+        // （起始横坐标，起始纵坐标，宽度，高度）
+        canvas.onmousemove = (e) => {
+            if(painting === true){
+                // 画圆圈
+                ctx.beginPath();
+                ctx.arc(e.clientX, e.clientY, 10, 0, 2 * Math.PI);
+                ctx.stroke();
+                // 把圆圈填满
+                ctx.fill();
+            }else{
+                console.log('什么都不做')
+            }
+        }
+        canvas.onmouseup = () => {
+            painting = false
+        }
+
     </script>
 </body>
 </html>
